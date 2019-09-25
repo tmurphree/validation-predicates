@@ -61,6 +61,14 @@ const isNotZeroLength = function isNotZeroLength(x) {
 
 // #region more-complex functions
 
+const isPopulatedArray = function isPopulatedArray(x) {
+  return isArray(x) && isNotZeroLength(x);
+};
+
+const isPopulatedString = function isPopulatedString(x) {
+  return isString(x) && isNotZeroLength(x);
+};
+
 /**
  * @description Checks for an object with required properties.
  * @param {object} x The object to test.
@@ -89,6 +97,8 @@ module.exports = {
   isNumber,
   isObject,
   isObjectWithExpectedProps,
+  isPopulatedArray,
+  isPopulatedString,
   isString,
   isSymbol,
   isUndefined,
