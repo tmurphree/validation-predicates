@@ -1,8 +1,6 @@
 /* eslint no-undef:"off" */
 
-require('dotenv').config();
-
-const fnToTest = require('../index.js');
+const { isObjectWithExpectedProps } = require('../index');
 
 // #region jasmine setup
 const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -33,12 +31,25 @@ const myReporter = {
 jasmine.getEnv().addReporter(myReporter);
 // #endregion jasmine setup
 
-describe('fnToTest', () => {
-  it('does something cool', () => fnToTest()
-    .then((res) => {
-      expect(res).toBe('foo');
-    })
-    .catch((err) => {
-      console.error(err);
-    }));
+describe('isObjectWithExpectedProps', () => {
+  const testObject = { foo: 42 };
+
+  it('throws if arrayOfProps is not an array of strings', () => {
+    expect(() => isObjectWithExpectedProps(testObject, 12)).toThrow();
+    expect(() => isObjectWithExpectedProps(testObject, ['allNeedToBeStrings', 12])).toThrow();
+    expect(() => isObjectWithExpectedProps(testObject, ['notHere'])).not.toThrow();
+  });
+
+  it('returns false if the "object" is not an object', () => {
+    expect(isObjectWithExpectedProps(12, ['foo'])).toBe(false);
+  });
+
+  it('returns true if the props are there', () => {
+    expect(isObjectWithExpectedProps(testObject, ['foo'])).toBe(true);
+  });
+
+  it('returns false if the props are not there', () => {
+    expect(isObjectWithExpectedProps(testObject, ['notThere'])).toBe(false);
+    expect(isObjectWithExpectedProps(testObject, ['foo', 'notThere'])).toBe(false);
+  });
 });

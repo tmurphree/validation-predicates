@@ -1,21 +1,24 @@
 {
   "name": "@tmurphree/validation-predicates",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --ignore-path .gitignore .",
+    "lint:fix": "eslint --ignore-path .gitignore --fix .",
+    "postinstall": "npm audit",
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "jasmine spec/index.spec.js",
+    "test:all": "jasmine"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "6.1.0",
     "eslint-config-airbnb-base": "14.0.0",
     "eslint-plugin-import": "2.18.2",
     "jasmine": "3.5.0"
   },
-  "dependencies": {
-    "dotenv": "8.1.0"
-  }
+  "dependencies": {}
 }
