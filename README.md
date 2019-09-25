@@ -41,7 +41,7 @@ const firstIsValid = function firstIsValid(x) {
 
 const secondIsValid = function secondIsValid(x) {
   return isPopulatedArray(x) &&
-    // mix and match with 
+    // mix and match with predicates not in the package
     x.every(isString);
 };
 
