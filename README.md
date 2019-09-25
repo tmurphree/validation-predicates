@@ -3,10 +3,11 @@
 # Why
 Functions that take some of the pain out of validating input.  Turns validation syntax into readable, easily-combinable functions.  This makes you more likely to do it.  
 
-There are other libraries out there that do similar things:
+There are other great libraries out there that do similar things:
 * [Generic validators](https://www.npmjs.com/package/validation-utils)    
 * [String validation](https://github.com/validatorjs/validator.js)  
- ... but they aren't as flexible as these predicates.  
+ 
+Please use them if you're looking for a different take on the same subject.  
 
  # Installation and Usage  
 
@@ -71,7 +72,7 @@ someFunction(42, ['some','array']);
 |isObject(x)|x is an object|  
 |isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
 |isPopulatedArray(x)|x is an array with at least one element|  
-|isPopulatedString(x)|x is a string and is not ''|  
+|isPopulatedString(x)|x is a string with at least one character|  
 |isString(x)|x is a string|  
 |isSymbol(x)|x is a [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)|  
 |isUndefined(x)|x is undefined|  
