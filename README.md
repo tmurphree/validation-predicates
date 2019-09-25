@@ -10,7 +10,6 @@ There are other libraries out there that do similar things:
 
  # Installation and Usage  
 
-OPValidations.js:
 ``` js
 const { 
   isNumberGreaterThan,
@@ -53,3 +52,28 @@ const someFunction = function someFunction(first, second) {
 
 someFunction(42, ['some','array']);
 ```
+
+# Functions  
+* All functions return `boolean`.  
+* All parameters are required.  
+* 'x' in the parameters list is the thing you want to test.  
+
+|Function|Summary|  
+|---|---|  
+|isArray(x)|x is an array|  
+|isBigInt(x)|x is a BigInt|  
+|isBoolean(x)|x is a boolean|  
+|isFunction(x)|x is a function|  
+|isNull(x)|x is null|  
+|isNumber(x)|x is a number|  
+|isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
+|isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
+|isObject(x)|x is an object|  
+|isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
+|isPopulatedArray(x)|x is an array with at least one element|  
+|isPopulatedString(x)|x is a string and is not ''|  
+|isString(x)|x is a string|  
+|isSymbol(x)|x is a [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)|  
+|isUndefined(x)|x is undefined|  
+|isNotNullOrUndefined(x)|x is not null and not undefined|  
+|isNotZeroLength(x)|length of x is > 0|  
