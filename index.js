@@ -61,6 +61,34 @@ const isNotZeroLength = function isNotZeroLength(x) {
 
 // #region more-complex functions
 
+/**
+ * @description Checks for a number greater than someNumber.
+ * @param {number} x The number to test.
+ * @param {number} someNumber The number to compare to.
+ * @returns {boolean}
+ */
+const isNumberGreaterThan = function isNumberGreaterThan(x, someNumber) {
+  if (!(isNumber(someNumber))) {
+    throw new Error('Expected the second agument to be a number');
+  }
+
+  return isNumber(x) && (x > someNumber);
+};
+
+/**
+ * @description Checks for a number less than someNumber.
+ * @param {number} x The number to test.
+ * @param {number} someNumber The number to compare to.
+ * @returns {boolean}
+ */
+const isNumberLessThan = function isNumberLessThan(x, someNumber) {
+  if (!(isNumber(someNumber))) {
+    throw new Error('Expected the second agument to be a number');
+  }
+
+  return isNumber(x) && (x < someNumber);
+};
+
 const isPopulatedArray = function isPopulatedArray(x) {
   return isArray(x) && isNotZeroLength(x);
 };
@@ -95,6 +123,8 @@ module.exports = {
   isFunction,
   isNull,
   isNumber,
+  isNumberGreaterThan,
+  isNumberLessThan,
   isObject,
   isObjectWithExpectedProps,
   isPopulatedArray,
