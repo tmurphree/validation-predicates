@@ -6,7 +6,6 @@
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
     "lint:fix": "eslint --ignore-path .gitignore --fix .",
-    "postinstall": "npm audit",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "jasmine spec/index.spec.js",
     "test:all": "jasmine"
