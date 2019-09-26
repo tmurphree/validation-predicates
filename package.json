@@ -1,12 +1,11 @@
 {
   "name": "@tmurphree/validation-predicates",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Functions that take some of the pain out of validating input",
   "main": "index.js",
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
     "lint:fix": "eslint --ignore-path .gitignore --fix .",
-    "postinstall": "npm audit",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "jasmine spec/index.spec.js",
     "test:all": "jasmine"
