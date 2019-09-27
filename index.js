@@ -30,7 +30,7 @@ const isNumber = function isNumber(x) {
 };
 
 const isObject = function isObject(x) {
-  return checkType(x, 'object');
+  return checkType(x, 'object') && !(isNull(x));
 };
 
 const isString = function isString(x) {
@@ -98,6 +98,17 @@ const isPopulatedString = function isPopulatedString(x) {
 };
 
 /**
+ * @description Checks that an object has the same properties as a reference object.  Also
+ *   checks to make sure that the properties are of the same type.
+ * @param {object} x The object to test.
+ * @param {object} referenceObject The object you want x to look like.
+ * @returns {boolean} boolean
+*/
+const isObjectLike = function isObjectLike(x, referenceObject) {
+  console.log(x, referenceObject);
+};
+
+/**
  * @description Checks for an object with required properties.
  * @param {object} x The object to test.
  * @param {string[]} arrayOfProps An array of strings with the propery names to test for.
@@ -122,16 +133,17 @@ module.exports = {
   isBoolean,
   isFunction,
   isNull,
+  isNotNullOrUndefined,
+  isNotZeroLength,
   isNumber,
   isNumberGreaterThan,
   isNumberLessThan,
   isObject,
+  isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedArray,
   isPopulatedString,
   isString,
   isSymbol,
   isUndefined,
-  isNotNullOrUndefined,
-  isNotZeroLength,
 };

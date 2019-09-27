@@ -31,6 +31,46 @@ const myReporter = {
 jasmine.getEnv().addReporter(myReporter);
 // #endregion jasmine setup
 
+xdescribe('isObjectLike', () => {
+  const referenceObject = {
+    age: 23,
+    name: 'Bob',
+    speak: (x) => console.log(x),
+  };
+
+  const makeTestObject = function makeTestObject(age, name) {
+    const speak = (x) => console.log(x);
+    return { age, name, speak };
+  };
+
+  it('throws if referenceObject is not an object', () => {
+    expect(() => isObjectLike(testObject, 12)).toThrow();
+    expect(() => isObjectLike(testObject, ['no Arrays please'])).toThrow();
+    expect(() => isObjectLike(testObject, 'no strings, either')).not.toThrow();
+    expect(() => isObjectLike(testObject, null)).not.toThrow();
+  });
+
+  it('returns false if the "object" is not an object', () => {
+    expect(isObjectLike(12, referenceObject)).toBe(false);
+    expect(isObjectLike(null, referenceObject)).toBe(false);
+    expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
+  });
+
+  it('returns true if the props are there', () => {
+    expect(isObjectLike(makeTestObject(18, 'Alice'), referenceObject)).toBe(true);
+  });
+
+  it('returns false if the props are not there', () => {
+    expect(isObjectLike({ age: 12, name: 'speak is missing' }, referenceObject)).toBe(false);
+  });
+
+  it('returns false if there are more props in the testObject than are in the referenceObject', () => {
+    const itHasMoreProps = makeTestObject(72, 'Jans');
+    itHasMoreProps.someAdditionalProp = true;
+    expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
+  });
+});
+
 describe('isObjectWithExpectedProps', () => {
   const testObject = { foo: 42 };
 
@@ -42,6 +82,7 @@ describe('isObjectWithExpectedProps', () => {
 
   it('returns false if the "object" is not an object', () => {
     expect(isObjectWithExpectedProps(12, ['foo'])).toBe(false);
+    expect(isObjectWithExpectedProps(null, ['foo'])).toBe(false);
   });
 
   it('returns true if the props are there', () => {
