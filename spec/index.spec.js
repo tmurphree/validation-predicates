@@ -1,6 +1,6 @@
 /* eslint no-undef:"off" */
 
-const { isObjectWithExpectedProps } = require('../index');
+const { isObjectLike, isObjectWithExpectedProps } = require('../index');
 
 // #region jasmine setup
 const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -31,23 +31,23 @@ const myReporter = {
 jasmine.getEnv().addReporter(myReporter);
 // #endregion jasmine setup
 
-xdescribe('isObjectLike', () => {
+describe('isObjectLike', () => {
   const referenceObject = {
     age: 23,
     name: 'Bob',
     speak: (x) => console.log(x),
   };
 
-  const makeTestObject = function makeTestObject(age, name) {
+  const makeTestObject = function makeTestObject(age = 3, name = 'Charlie') {
     const speak = (x) => console.log(x);
     return { age, name, speak };
   };
 
   it('throws if referenceObject is not an object', () => {
-    expect(() => isObjectLike(testObject, 12)).toThrow();
-    expect(() => isObjectLike(testObject, ['no Arrays please'])).toThrow();
-    expect(() => isObjectLike(testObject, 'no strings, either')).not.toThrow();
-    expect(() => isObjectLike(testObject, null)).not.toThrow();
+    expect(() => isObjectLike({ tested: false }, 12)).toThrow();
+    expect(() => isObjectLike({ tested: false }, ['no Arrays please'])).toThrow();
+    expect(() => isObjectLike({ tested: false }, 'no strings, either')).toThrow();
+    expect(() => isObjectLike({ tested: false }, null)).toThrow();
   });
 
   it('returns false if the "object" is not an object', () => {
@@ -68,6 +68,10 @@ xdescribe('isObjectLike', () => {
     const itHasMoreProps = makeTestObject(72, 'Jans');
     itHasMoreProps.someAdditionalProp = true;
     expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
+  });
+
+  it('returns false if the props are not of the same type', () => {
+    expect(isObjectLike(makeTestObject('oops', 'wrong type'), referenceObject)).toBe(false);
   });
 });
 
