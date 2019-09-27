@@ -1,6 +1,6 @@
 /* eslint no-undef:"off" */
 
-const { isObjectWithExpectedProps } = require('../index');
+const { isObjectLike, isObjectWithExpectedProps } = require('../index');
 
 // #region jasmine setup
 const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -31,6 +31,50 @@ const myReporter = {
 jasmine.getEnv().addReporter(myReporter);
 // #endregion jasmine setup
 
+describe('isObjectLike', () => {
+  const referenceObject = {
+    age: 23,
+    name: 'Bob',
+    speak: (x) => console.log(x),
+  };
+
+  const makeTestObject = function makeTestObject(age = 3, name = 'Charlie') {
+    const speak = (x) => console.log(x);
+    return { age, name, speak };
+  };
+
+  it('throws if referenceObject is not an object', () => {
+    expect(() => isObjectLike({ tested: false }, 12)).toThrow();
+    expect(() => isObjectLike({ tested: false }, ['no Arrays please'])).toThrow();
+    expect(() => isObjectLike({ tested: false }, 'no strings, either')).toThrow();
+    expect(() => isObjectLike({ tested: false }, null)).toThrow();
+  });
+
+  it('returns false if the "object" is not an object', () => {
+    expect(isObjectLike(12, referenceObject)).toBe(false);
+    expect(isObjectLike(null, referenceObject)).toBe(false);
+    expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
+  });
+
+  it('returns true if the props are there', () => {
+    expect(isObjectLike(makeTestObject(18, 'Alice'), referenceObject)).toBe(true);
+  });
+
+  it('returns false if the props are not there', () => {
+    expect(isObjectLike({ age: 12, name: 'speak is missing' }, referenceObject)).toBe(false);
+  });
+
+  it('returns false if there are more props in the testObject than are in the referenceObject', () => {
+    const itHasMoreProps = makeTestObject(72, 'Jans');
+    itHasMoreProps.someAdditionalProp = true;
+    expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
+  });
+
+  it('returns false if the props are not of the same type', () => {
+    expect(isObjectLike(makeTestObject('oops', 'wrong type'), referenceObject)).toBe(false);
+  });
+});
+
 describe('isObjectWithExpectedProps', () => {
   const testObject = { foo: 42 };
 
@@ -42,6 +86,7 @@ describe('isObjectWithExpectedProps', () => {
 
   it('returns false if the "object" is not an object', () => {
     expect(isObjectWithExpectedProps(12, ['foo'])).toBe(false);
+    expect(isObjectWithExpectedProps(null, ['foo'])).toBe(false);
   });
 
   it('returns true if the props are there', () => {

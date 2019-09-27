@@ -29,8 +29,13 @@ const isNumber = function isNumber(x) {
   return checkType(x, 'number');
 };
 
+/**
+ * @description Checks for an object (e.g. { message: 'hi' }).  Returns false for null and arrays.
+ * @param {object} x The object to test.
+ * @returns {boolean} boolean
+ */
 const isObject = function isObject(x) {
-  return checkType(x, 'object');
+  return checkType(x, 'object') && !(isNull(x)) && !(isArray(x));
 };
 
 const isString = function isString(x) {
@@ -65,7 +70,7 @@ const isNotZeroLength = function isNotZeroLength(x) {
  * @description Checks for a number greater than someNumber.
  * @param {number} x The number to test.
  * @param {number} someNumber The number to compare to.
- * @returns {boolean}
+ * @returns {boolean} boolean
  */
 const isNumberGreaterThan = function isNumberGreaterThan(x, someNumber) {
   if (!(isNumber(someNumber))) {
@@ -79,7 +84,7 @@ const isNumberGreaterThan = function isNumberGreaterThan(x, someNumber) {
  * @description Checks for a number less than someNumber.
  * @param {number} x The number to test.
  * @param {number} someNumber The number to compare to.
- * @returns {boolean}
+ * @returns {boolean} boolean
  */
 const isNumberLessThan = function isNumberLessThan(x, someNumber) {
   if (!(isNumber(someNumber))) {
@@ -101,7 +106,7 @@ const isPopulatedString = function isPopulatedString(x) {
  * @description Checks for an object with required properties.
  * @param {object} x The object to test.
  * @param {string[]} arrayOfProps An array of strings with the propery names to test for.
- * @returns {boolean}
+ * @returns {boolean} boolean
  */
 const isObjectWithExpectedProps = function isObjectWithExpectedProps(x, arrayOfProps) {
   if (!(isArray(arrayOfProps)) || !(arrayOfProps.every(isString))) {
@@ -114,6 +119,28 @@ const isObjectWithExpectedProps = function isObjectWithExpectedProps(x, arrayOfP
   return isObject(x) && arrayOfProps.every((el) => Object.keys(x).includes(el));
 };
 
+/**
+ * @description Checks that an object has the same properties as a reference object.  Also
+ *   checks to make sure that the properties are of the same type.
+ * @param {object} x The object to test.
+ * @param {object} referenceObject The object you want x to look like.
+ * @returns {boolean} boolean
+*/
+const isObjectLike = function isObjectLike(x, referenceObject) {
+  if (!(isObject(referenceObject))) {
+    throw new Error('Expected referenceObject to be an object.');
+  }
+
+  const objectPropsAreSameType = function objectPropsAreSameType() {
+    return Object.keys(x)
+      .every((el) => typeof x[el] === typeof referenceObject[el]);
+  };
+
+  return isObjectWithExpectedProps(x, Object.keys(referenceObject)) &&
+    Object.keys(x).length === Object.keys(referenceObject).length &&
+    objectPropsAreSameType();
+};
+
 // #endregion more-complex functions
 
 module.exports = {
@@ -122,16 +149,17 @@ module.exports = {
   isBoolean,
   isFunction,
   isNull,
+  isNotNullOrUndefined,
+  isNotZeroLength,
   isNumber,
   isNumberGreaterThan,
   isNumberLessThan,
   isObject,
+  isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedArray,
   isPopulatedString,
   isString,
   isSymbol,
   isUndefined,
-  isNotNullOrUndefined,
-  isNotZeroLength,
 };
