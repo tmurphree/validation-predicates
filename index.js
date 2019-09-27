@@ -124,17 +124,34 @@ const isObjectWithExpectedProps = function isObjectWithExpectedProps(x, arrayOfP
  *   checks to make sure that the properties are of the same type.
  * @param {object} x The object to test.
  * @param {object} referenceObject The object you want x to look like.
+ * @param {object} [options={ debug: false }] Options.  Right now, only { debug: true }
+ *   does anything (prints troubleshooting info to console).
  * @returns {boolean} boolean
 */
-const isObjectLike = function isObjectLike(x, referenceObject) {
+const isObjectLike = function isObjectLike(x, referenceObject, options = { debug: false }) {
   if (!(isObject(referenceObject))) {
     throw new Error('Expected referenceObject to be an object.');
   }
 
   const objectPropsAreSameType = function objectPropsAreSameType() {
     return Object.keys(x)
-      .every((el) => typeof x[el] === typeof referenceObject[el]);
+      .every((el) => {
+        if (options.debug && (typeof x[el] !== typeof referenceObject[el])) {
+          console.log(`Property type mismatch detected for property ${el}`);
+          console.log(`Got ${typeof x[el]}, expected ${typeof referenceObject[el]}`);
+        }
+
+        return typeof x[el] === typeof referenceObject[el];
+      });
   };
+
+  if (options.debug) {
+    console.log(`x is ${JSON.stringify(x, null, 2)}`);
+    console.log(`referenceObject is ${JSON.stringify(referenceObject, null, 2)}`);
+    console.log(`isObjectWithExpectedProps? ${isObjectWithExpectedProps(x, Object.keys(referenceObject))}`);
+    console.log(`key length the same? ${Object.keys(x).length === Object.keys(referenceObject).length}`);
+    console.log(`objectPropsAreSameType? ${objectPropsAreSameType()}`);
+  }
 
   return isObjectWithExpectedProps(x, Object.keys(referenceObject)) &&
     Object.keys(x).length === Object.keys(referenceObject).length &&

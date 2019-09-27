@@ -11,7 +11,7 @@ Please use them if you're looking for a different take on the same subject.
 
 # Installation
 
-npm install @tmurphree/validation-predicates  
+npm install --save @tmurphree/validation-predicates  
 
 # Usage  
 
@@ -62,7 +62,8 @@ someFunction(42, ['some','array']);
 
 # Functions  
 * All functions return `boolean`.  
-* All parameters are required.  
+* Parameters not in brackets are required.  
+* Parameters in brackets are optional.  
 * 'x' in the parameters list is the thing you want to test.  
 
 |Function|Summary|  
@@ -78,7 +79,7 @@ someFunction(42, ['some','array']);
 |isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
 |isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
 |isObject(x)|x is an object (e.g. { message: 'hi' }).  Returns false for null and arrays.|  
-|isObjectLike(x, referenceObject)|x is an object and has the same properties as referenceObject|  
+|isObjectLike(x, referenceObject, [options={ debug: false }])|x is an object and has the same properties as referenceObject.   Optional `options` object looks for a `debug` property with value `true` (e.g. { debug: true }).  If true, prints debug information to the console.|  
 |isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
 |isPopulatedArray(x)|x is an array with at least one element|  
 |isPopulatedString(x)|x is a string with at least one character|  
