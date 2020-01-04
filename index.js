@@ -17,6 +17,10 @@ const isBoolean = function isBoolean(x) {
   return checkType(x, 'boolean');
 };
 
+const isDate = function isDate(x) {
+  return x instanceof Date;
+};
+
 const isFunction = function isFunction(x) {
   return checkType(x, 'function');
 };
@@ -65,6 +69,36 @@ const isNotZeroLength = function isNotZeroLength(x) {
 // #endregion "is not" functions
 
 // #region more-complex functions
+
+/**
+ * @description Checks for a date greater than (after) someDate.
+ *   isDateAfter is an alias of isDateGreaterThan.
+ * @param {number} x The number to test.
+ * @param {number} someNumber The number to compare to.
+ * @returns {boolean} boolean
+ */
+const isDateGreaterThan = function isDateGreaterThan(x, someDate) {
+  if (!(isDate(someDate))) {
+    throw new Error('Expected the second agument to be a date');
+  }
+
+  return isDate(x) && (x > someDate);
+};
+
+/**
+ * @description Checks for a date less than (before) someNumber.
+ *   isDateBefore is an alias of isDateLessThan.
+ * @param {number} x The number to test.
+ * @param {number} someNumber The number to compare to.
+ * @returns {boolean} boolean
+ */
+const isDateLessThan = function isDateLessThan(x, someDate) {
+  if (!(isDate(someDate))) {
+    throw new Error('Expected the second agument to be a date');
+  }
+
+  return isDate(x) && (x < someDate);
+};
 
 /**
  * @description Checks for a number greater than someNumber.
@@ -185,6 +219,11 @@ module.exports = {
   isArray,
   isBigInt,
   isBoolean,
+  isDate,
+  isDateAfter: isDateGreaterThan,
+  isDateBefore: isDateLessThan,
+  isDateGreaterThan,
+  isDateLessThan,
   isFunction,
   isNull,
   isNotNullOrUndefined,

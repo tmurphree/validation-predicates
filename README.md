@@ -73,6 +73,11 @@ someFunction(42, ['some','array']);
 |isArray(x)|x is an array|  
 |isBigInt(x)|x is a BigInt|  
 |isBoolean(x)|x is a boolean|  
+|isDate(x)|x is a Date|  
+|isDateAfter(x, someDate)|alias for isDateGreaterThan|  
+|isDateBefore(x, someDate)|alias for isDateLessThan|  
+|isDateGreaterThan(x, someDate)|x is a Date greater than (after) someDate|  
+|isDateLessThan(x, someDate)|x is a Date less than (before) someDate|  
 |isFunction(x)|x is a function|  
 |isNotNullOrUndefined(x)|x is not null and not undefined|  
 |isNotZeroLength(x)|length of x is > 0|  

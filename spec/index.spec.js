@@ -1,6 +1,11 @@
 /* eslint no-undef:"off" */
 
 const {
+  isDate,
+  isDateAfter,
+  isDateBefore,
+  isDateGreaterThan,
+  isDateLessThan,
   isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedObject,
@@ -154,5 +159,46 @@ describe('isPopulatedObject', () => {
     x[testSymbol] = 'hi';
 
     expect(isPopulatedObject(x)).toBe(true);
+  });
+});
+
+describe('isDate', () => {
+  it('tests for Dates', () => {
+    expect(isDate(1)).toBe(false);
+    expect(isDate(new Date())).toBe(true);
+  });
+});
+
+describe('isDateGreaterThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateGreaterThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFirst2020, marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFifteenth2020, marchFirst2020)).toBe(true);
+    // equal
+    expect(isDateGreaterThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateAfter).toEqual(isDateGreaterThan);
+  });
+});
+
+describe('isDateLessThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateLessThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateLessThan(marchFirst2020, marchFifteenth2020)).toBe(true);
+    expect(isDateLessThan(marchFifteenth2020, marchFirst2020)).toBe(false);
+    // equal
+    expect(isDateLessThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateBefore).toEqual(isDateLessThan);
   });
 });
