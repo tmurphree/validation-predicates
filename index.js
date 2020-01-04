@@ -94,6 +94,11 @@ const isNumberLessThan = function isNumberLessThan(x, someNumber) {
   return isNumber(x) && (x < someNumber);
 };
 
+const isPopulatedObject = function isPopulatedObject(x) {
+  return isObject(x) &&
+    (Object.keys(x).length > 0 || Object.getOwnPropertySymbols(x).length > 0);
+};
+
 const isPopulatedArray = function isPopulatedArray(x) {
   return isArray(x) && isNotZeroLength(x);
 };
@@ -175,6 +180,7 @@ module.exports = {
   isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedArray,
+  isPopulatedObject,
   isPopulatedString,
   isString,
   isSymbol,

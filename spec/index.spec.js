@@ -1,6 +1,10 @@
 /* eslint no-undef:"off" */
 
-const { isObjectLike, isObjectWithExpectedProps } = require('../index');
+const {
+  isObjectLike,
+  isObjectWithExpectedProps,
+  isPopulatedObject,
+} = require('../index');
 
 // #region jasmine setup
 const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -96,5 +100,39 @@ describe('isObjectWithExpectedProps', () => {
   it('returns false if the props are not there', () => {
     expect(isObjectWithExpectedProps(testObject, ['notThere'])).toBe(false);
     expect(isObjectWithExpectedProps(testObject, ['foo', 'notThere'])).toBe(false);
+  });
+
+  describe('isPopulatedObject', () => {
+    it('returns false for non-object (non {}) input', () => {
+      expect(isPopulatedObject(12)).toBe(false);
+      expect(isPopulatedObject(['a', 'b'])).toBe(false);
+      expect(isPopulatedObject(null)).toBe(false);
+    });
+
+    it('returns false for {} with no keys and no symbols', () => {
+      expect(isPopulatedObject({})).toBe(false);
+    });
+
+    it('returns true for {} with keys', () => {
+      const onlyHasAmethod = {
+        returnA() {
+          return 'a';
+        },
+      };
+
+      expect(isPopulatedObject({ hi: 'there' })).toBe(true);
+
+      expect(isPopulatedObject(onlyHasAmethod)).toBe(true);
+    });
+
+    it('returns true for {} with symbols', () => {
+      const testSymbol = Symbol('testSymbol');
+      // eslint-disable-next-line prefer-const
+      let x = {};
+
+      x[testSymbol] = 'hi';
+
+      expect(isPopulatedObject(x)).toBe(true);
+    });
   });
 });

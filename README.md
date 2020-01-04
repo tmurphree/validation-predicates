@@ -79,9 +79,10 @@ someFunction(42, ['some','array']);
 |isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
 |isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
 |isObject(x)|x is an object (e.g. { message: 'hi' }).  Returns false for null and arrays.|  
-|isObjectLike(x, referenceObject, [options={ debug: false }])|x is an object and has the same properties as referenceObject.   Optional `options` object looks for a `debug` property with value `true` (e.g. { debug: true }).  If true, prints debug information to the console.|  
+|isObjectLike(x, referenceObject, [options={ debug: false }])|x is an object and has the same properties with the same types as referenceObject.   Optional `options` object looks for a `debug` property with value `true` (e.g. { debug: true }).  If true, prints debug information to the console.|  
 |isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
 |isPopulatedArray(x)|x is an array with at least one element|  
+|isPopulatedObject(x)|x is an object with at least one key or Symbol|
 |isPopulatedString(x)|x is a string with at least one character|  
 |isString(x)|x is a string|  
 |isSymbol(x)|x is a [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)|  

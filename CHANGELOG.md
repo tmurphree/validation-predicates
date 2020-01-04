@@ -1,3 +1,6 @@
+# v1.1.2  
+Add isPopulatedObject  
+
 # v1.1.1  
 * Add debug option to isObjectLike  
 
