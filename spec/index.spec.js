@@ -1,6 +1,15 @@
 /* eslint no-undef:"off" */
 
-const { isObjectLike, isObjectWithExpectedProps } = require('../index');
+const {
+  isDate,
+  isDateAfter,
+  isDateBefore,
+  isDateGreaterThan,
+  isDateLessThan,
+  isObjectLike,
+  isObjectWithExpectedProps,
+  isPopulatedObject,
+} = require('../index');
 
 // #region jasmine setup
 const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -56,8 +65,9 @@ describe('isObjectLike', () => {
     expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
   });
 
-  it('returns true if the props are there', () => {
-    expect(isObjectLike(makeTestObject(18, 'Alice'), referenceObject)).toBe(true);
+  it('returns true if the props are there (with type checking on by default)', () => {
+    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(false);
+    expect(isObjectLike(makeTestObject(99, 'Xavier'), referenceObject)).toBe(true);
   });
 
   it('returns false if the props are not there', () => {
@@ -70,8 +80,27 @@ describe('isObjectLike', () => {
     expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
   });
 
-  it('returns false if the props are not of the same type', () => {
-    expect(isObjectLike(makeTestObject('oops', 'wrong type'), referenceObject)).toBe(false);
+  it('optionally checks types', () => {
+    // wrong type, no type checking
+    expect(isObjectLike(
+      makeTestObject('oops', 'wrong type'),
+      referenceObject,
+      { checkType: false },
+    )).toBe(true);
+
+    // wrong type, with type checking
+    expect(isObjectLike(
+      makeTestObject('oops', 'wrong type'),
+      referenceObject,
+      { checkType: true },
+    )).toBe(false);
+
+    // correct type, with type checking
+    expect(isObjectLike(
+      makeTestObject(34, 'correct type'),
+      referenceObject,
+      { checkType: true },
+    )).toBe(true);
   });
 });
 
@@ -96,5 +125,80 @@ describe('isObjectWithExpectedProps', () => {
   it('returns false if the props are not there', () => {
     expect(isObjectWithExpectedProps(testObject, ['notThere'])).toBe(false);
     expect(isObjectWithExpectedProps(testObject, ['foo', 'notThere'])).toBe(false);
+  });
+});
+
+describe('isPopulatedObject', () => {
+  it('returns false for non-object (non {}) input', () => {
+    expect(isPopulatedObject(12)).toBe(false);
+    expect(isPopulatedObject(['a', 'b'])).toBe(false);
+    expect(isPopulatedObject(null)).toBe(false);
+  });
+
+  it('returns false for {} with no keys and no symbols', () => {
+    expect(isPopulatedObject({})).toBe(false);
+  });
+
+  it('returns true for {} with keys', () => {
+    const onlyHasAmethod = {
+      returnA() {
+        return 'a';
+      },
+    };
+
+    expect(isPopulatedObject({ hi: 'there' })).toBe(true);
+
+    expect(isPopulatedObject(onlyHasAmethod)).toBe(true);
+  });
+
+  it('returns true for {} with symbols', () => {
+    const testSymbol = Symbol('testSymbol');
+    // eslint-disable-next-line prefer-const
+    let x = {};
+
+    x[testSymbol] = 'hi';
+
+    expect(isPopulatedObject(x)).toBe(true);
+  });
+});
+
+describe('isDate', () => {
+  it('tests for Dates', () => {
+    expect(isDate(1)).toBe(false);
+    expect(isDate(new Date())).toBe(true);
+  });
+});
+
+describe('isDateGreaterThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateGreaterThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFirst2020, marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFifteenth2020, marchFirst2020)).toBe(true);
+    // equal
+    expect(isDateGreaterThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateAfter).toEqual(isDateGreaterThan);
+  });
+});
+
+describe('isDateLessThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateLessThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateLessThan(marchFirst2020, marchFifteenth2020)).toBe(true);
+    expect(isDateLessThan(marchFifteenth2020, marchFirst2020)).toBe(false);
+    // equal
+    expect(isDateLessThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateBefore).toEqual(isDateLessThan);
   });
 });
