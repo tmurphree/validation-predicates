@@ -1,5 +1,6 @@
-# v1.1.2  
-Add isPopulatedObject  
+# v1.2.0
+* Add option to disable type checking on isObjectLike  
+* Add isPopulatedObject  
 
 # v1.1.1  
 * Add debug option to isObjectLike  

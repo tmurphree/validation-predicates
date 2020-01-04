@@ -125,21 +125,31 @@ const isObjectWithExpectedProps = function isObjectWithExpectedProps(x, arrayOfP
 };
 
 /**
- * @description Checks that an object has the same properties as a reference object.  Also
+ * @description Checks that an object has the same properties as a reference object.  Optionally
  *   checks to make sure that the properties are of the same type.
  * @param {object} x The object to test.
  * @param {object} referenceObject The object you want x to look like.
- * @param {object} [options={ debug: false }] Options.  Right now, only { debug: true }
- *   does anything (prints troubleshooting info to console).
+ * @param {object} [options] Options.
+ * @param {boolean} [options.checkType=true] Return false if the properties are there but
+ *   are of different types.
+ * @param {boolean} [options.debug=false] Print troubleshooting info to console.
  * @returns {boolean} boolean
 */
-const isObjectLike = function isObjectLike(x, referenceObject, options = { debug: false }) {
+const isObjectLike = function isObjectLike(
+  x,
+  referenceObject,
+  options = { checkType: true, debug: false },
+) {
   if (!(isObject(referenceObject))) {
     throw new Error('Expected referenceObject to be an object.');
   }
 
+  if (!(isObject(options))) {
+    throw new Error('Expected options to be an object.');
+  }
+
   const objectPropsAreSameType = function objectPropsAreSameType() {
-    return Object.keys(x)
+    return isObject(x) && Object.keys(x)
       .every((el) => {
         if (options.debug && (typeof x[el] !== typeof referenceObject[el])) {
           console.log(`Property type mismatch detected for property ${el}`);
@@ -150,17 +160,23 @@ const isObjectLike = function isObjectLike(x, referenceObject, options = { debug
       });
   };
 
+  const typeCheckPasses = options.checkType ?
+    objectPropsAreSameType() :
+    true;
+
   if (options.debug) {
     console.log(`x is ${JSON.stringify(x, null, 2)}`);
     console.log(`referenceObject is ${JSON.stringify(referenceObject, null, 2)}`);
     console.log(`isObjectWithExpectedProps? ${isObjectWithExpectedProps(x, Object.keys(referenceObject))}`);
-    console.log(`key length the same? ${Object.keys(x).length === Object.keys(referenceObject).length}`);
+    if (isObject(x)) {
+      console.log(`key length the same? ${Object.keys(x).length === Object.keys(referenceObject).length}`);
+    }
     console.log(`objectPropsAreSameType? ${objectPropsAreSameType()}`);
   }
 
   return isObjectWithExpectedProps(x, Object.keys(referenceObject)) &&
     Object.keys(x).length === Object.keys(referenceObject).length &&
-    objectPropsAreSameType();
+    typeCheckPasses;
 };
 
 // #endregion more-complex functions

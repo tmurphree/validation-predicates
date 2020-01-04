@@ -31,7 +31,8 @@ const {
 // const secondIsValid = function secondIsValid(x) {
 //   return Array.isArray(x) &&
 //      x.length > 0 &&
-//      x.every((el) => typeof el === 'string');
+//      x.every((el) => typeof el === 'string') &&
+//      x.every((el) => el.length > 2);
 // };
 
 // the same tests using validation-predicates 
@@ -41,8 +42,9 @@ const firstIsValid = function firstIsValid(x) {
 
 const secondIsValid = function secondIsValid(x) {
   return isPopulatedArray(x) &&
+    x.every(isString) &&
     // mix and match with predicates not in the package
-    x.every(isString);
+    x.every((el) => el.length > 2);
 };
 
 const someFunction = function someFunction(first, second) {
@@ -51,7 +53,7 @@ const someFunction = function someFunction(first, second) {
   }
 
   if (!(secondIsValid(second))) {
-    throw new Error('Expected second to be an array of strings.');
+    throw new Error('Expected second to be an array of strings longer than 2 characters.');
   }
 
   // amazing code goes here
@@ -79,10 +81,10 @@ someFunction(42, ['some','array']);
 |isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
 |isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
 |isObject(x)|x is an object (e.g. { message: 'hi' }).  Returns false for null and arrays.|  
-|isObjectLike(x, referenceObject, [options={ debug: false }])|x is an object and has the same properties with the same types as referenceObject.   Optional `options` object looks for a `debug` property with value `true` (e.g. { debug: true }).  If true, prints debug information to the console.|  
+|isObjectLike(x, referenceObject, [options={ checkType: true, debug: false }])|x is an object and has the same properties as referenceObject.  By default, also checks that all the properties are of the same type, **BUT** this is rudimentary checking (with typeof).  <br> Options: <br> * { checkType: true } checks that the properties are the same type <br> * { debug: true } prints debug information to the console.|  
 |isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
 |isPopulatedArray(x)|x is an array with at least one element|  
-|isPopulatedObject(x)|x is an object with at least one key or Symbol|
+|isPopulatedObject(x)|x is an object with at least one property or Symbol|
 |isPopulatedString(x)|x is a string with at least one character|  
 |isString(x)|x is a string|  
 |isSymbol(x)|x is a [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)|  

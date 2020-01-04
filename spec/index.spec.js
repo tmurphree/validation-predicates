@@ -60,8 +60,9 @@ describe('isObjectLike', () => {
     expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
   });
 
-  it('returns true if the props are there', () => {
-    expect(isObjectLike(makeTestObject(18, 'Alice'), referenceObject)).toBe(true);
+  it('returns true if the props are there (with type checking on by default)', () => {
+    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(false);
+    expect(isObjectLike(makeTestObject(99, 'Xavier'), referenceObject)).toBe(true);
   });
 
   it('returns false if the props are not there', () => {
@@ -74,8 +75,27 @@ describe('isObjectLike', () => {
     expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
   });
 
-  it('returns false if the props are not of the same type', () => {
-    expect(isObjectLike(makeTestObject('oops', 'wrong type'), referenceObject)).toBe(false);
+  it('optionally checks types', () => {
+    // wrong type, no type checking
+    expect(isObjectLike(
+      makeTestObject('oops', 'wrong type'),
+      referenceObject,
+      { checkType: false },
+    )).toBe(true);
+
+    // wrong type, with type checking
+    expect(isObjectLike(
+      makeTestObject('oops', 'wrong type'),
+      referenceObject,
+      { checkType: true },
+    )).toBe(false);
+
+    // correct type, with type checking
+    expect(isObjectLike(
+      makeTestObject(34, 'correct type'),
+      referenceObject,
+      { checkType: true },
+    )).toBe(true);
   });
 });
 
@@ -101,38 +121,38 @@ describe('isObjectWithExpectedProps', () => {
     expect(isObjectWithExpectedProps(testObject, ['notThere'])).toBe(false);
     expect(isObjectWithExpectedProps(testObject, ['foo', 'notThere'])).toBe(false);
   });
+});
 
-  describe('isPopulatedObject', () => {
-    it('returns false for non-object (non {}) input', () => {
-      expect(isPopulatedObject(12)).toBe(false);
-      expect(isPopulatedObject(['a', 'b'])).toBe(false);
-      expect(isPopulatedObject(null)).toBe(false);
-    });
+describe('isPopulatedObject', () => {
+  it('returns false for non-object (non {}) input', () => {
+    expect(isPopulatedObject(12)).toBe(false);
+    expect(isPopulatedObject(['a', 'b'])).toBe(false);
+    expect(isPopulatedObject(null)).toBe(false);
+  });
 
-    it('returns false for {} with no keys and no symbols', () => {
-      expect(isPopulatedObject({})).toBe(false);
-    });
+  it('returns false for {} with no keys and no symbols', () => {
+    expect(isPopulatedObject({})).toBe(false);
+  });
 
-    it('returns true for {} with keys', () => {
-      const onlyHasAmethod = {
-        returnA() {
-          return 'a';
-        },
-      };
+  it('returns true for {} with keys', () => {
+    const onlyHasAmethod = {
+      returnA() {
+        return 'a';
+      },
+    };
 
-      expect(isPopulatedObject({ hi: 'there' })).toBe(true);
+    expect(isPopulatedObject({ hi: 'there' })).toBe(true);
 
-      expect(isPopulatedObject(onlyHasAmethod)).toBe(true);
-    });
+    expect(isPopulatedObject(onlyHasAmethod)).toBe(true);
+  });
 
-    it('returns true for {} with symbols', () => {
-      const testSymbol = Symbol('testSymbol');
-      // eslint-disable-next-line prefer-const
-      let x = {};
+  it('returns true for {} with symbols', () => {
+    const testSymbol = Symbol('testSymbol');
+    // eslint-disable-next-line prefer-const
+    let x = {};
 
-      x[testSymbol] = 'hi';
+    x[testSymbol] = 'hi';
 
-      expect(isPopulatedObject(x)).toBe(true);
-    });
+    expect(isPopulatedObject(x)).toBe(true);
   });
 });
