@@ -1,11 +1,22 @@
-# v1.2.0
+# 2.0.0  
+## Breaking changes   
+* Change the default behavior of isObjectLike to use { checkType: false }  
+* Replace isNotNullOrUndefined with isNullOrUndefined  
+* Replace isNotZeroLength with isZeroLength  
+
+## Other changes  
+* Add strict mode  
+* Add isFloat, isInteger, and isIsoDateString
+
+
+# 1.2.0  
 * Add option to disable type checking on isObjectLike  
 * Add isPopulatedObject  
 * Add isDate, isDateGreaterThan, and isDateLessThan  
 
-# v1.1.1  
+# 1.1.1  
 * Add debug option to isObjectLike  
 
-# v1.1  
+# 1.1  
 * Add isObjectLike  
 * Return false from isObject if test data is null or an array  

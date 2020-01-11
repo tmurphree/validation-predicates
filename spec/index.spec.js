@@ -6,9 +6,17 @@ const {
   isDateBefore,
   isDateGreaterThan,
   isDateLessThan,
+  isInteger,
+  isIsoDateTimeString,
+  isFloat,
+  isNumber,
+  isObject,
   isObjectLike,
   isObjectWithExpectedProps,
+  isPopulatedArray,
   isPopulatedObject,
+  isPopulatedString,
+  isZeroLength,
 } = require('../index');
 
 // #region jasmine setup
@@ -40,6 +48,158 @@ const myReporter = {
 jasmine.getEnv().addReporter(myReporter);
 // #endregion jasmine setup
 
+describe('isDate', () => {
+  it('tests for Dates', () => {
+    expect(isDate(1)).toBe(false);
+    expect(isDate(new Date())).toBe(true);
+  });
+});
+
+describe('isDateGreaterThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateGreaterThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFirst2020, marchFifteenth2020)).toBe(false);
+    expect(isDateGreaterThan(marchFifteenth2020, marchFirst2020)).toBe(true);
+    // equal
+    expect(isDateGreaterThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateAfter).toEqual(isDateGreaterThan);
+  });
+});
+
+describe('isDateLessThan', () => {
+  it('tests for Dates after another date', () => {
+    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
+    const marchFifteenth2020 = new Date(2020, 2, 15);
+
+    expect(isDateLessThan('not a date', marchFifteenth2020)).toBe(false);
+    expect(isDateLessThan(marchFirst2020, marchFifteenth2020)).toBe(true);
+    expect(isDateLessThan(marchFifteenth2020, marchFirst2020)).toBe(false);
+    // equal
+    expect(isDateLessThan(marchFirst2020, marchFirst2020)).toBe(false);
+  });
+
+  it('has an alias', () => {
+    expect(isDateBefore).toEqual(isDateLessThan);
+  });
+});
+
+describe('isFloat', () => {
+  it('tests for floats', () => {
+    expect(isFloat('asdf')).toBeFalse();
+    expect(isFloat(12)).toBeFalse();
+    expect(isFloat(5.0)).toBeFalse();
+    expect(isFloat(12.32)).toBeTrue();
+  });
+});
+
+describe('isInteger', () => {
+  it('tests for integers', () => {
+    expect(isInteger('asdf')).toBeFalse();
+    expect(isInteger(12.32)).toBeFalse();
+    expect(isInteger(12)).toBeTrue();
+    expect(isInteger(5.0)).toBeTrue();
+  });
+});
+
+describe('isIsoDateTimeString', () => {
+  it('tests for strings', () => {
+    expect(isIsoDateTimeString(12)).toBeFalse();
+    expect(isIsoDateTimeString(new Date())).toBeFalse();
+  });
+
+  it('tests for the +/- hh:mm format', () => {
+    // error path
+    const monthTensMoreThan1 = '2000-31-01T01:01:01-10:00';
+    const dayTensMoreThan3 = '2000-01-41T01:01:01-10:00';
+    const hourTensMoreThan2 = '2000-01-01T31:01:01-10:00';
+    const minuteTensMoreThan5 = '2000-01-01T01:71:01-10:00';
+    const secondTensMoreThan5 = '2000-01-01T01:01:61-10:00';
+    const hourOffsetTensMoreThan2 = '2000-01-01T01:01:01-30:00';
+    const minuteOffsetTensMoreThan5 = '2000-01-01T01:01:01-10:90';
+
+    // happy path
+    const noMilliseconds = '2000-01-01T01:01:01-10:00';
+    const withMilliseconds = '2000-01-01T01:01:01.234-10:00';
+    const usesAplusSign = '2000-01-01T01:01:01+09:00';
+
+    expect(isIsoDateTimeString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateTimeString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateTimeString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(hourOffsetTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteOffsetTensMoreThan5)).toBeFalse();
+
+    expect(isIsoDateTimeString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(withMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(usesAplusSign)).toBeTrue();
+  });
+
+  it('tests for the Z format', () => {
+    // error path
+    const monthTensMoreThan1 = '2000-31-01T01:01:01Z';
+    const dayTensMoreThan3 = '2000-01-41T01:01:01Z';
+    const hourTensMoreThan2 = '2000-01-01T31:01:01Z';
+    const minuteTensMoreThan5 = '2000-01-01T01:71:01Z';
+    const secondTensMoreThan5 = '2000-01-01T01:01:61Z';
+    const lowerCaseZ = '2000-01-01T01:01:01z';
+
+    // happy path
+    const noMilliseconds = '2000-01-01T01:01:01Z';
+    const withMilliseconds = '2000-01-01T01:01:01.234Z';
+
+    expect(isIsoDateTimeString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateTimeString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateTimeString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(lowerCaseZ)).toBeFalse();
+
+    expect(isIsoDateTimeString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(withMilliseconds)).toBeTrue();
+  });
+});
+
+describe('isNumber', () => {
+  it('returns false for NaN', () => {
+    expect(isNumber(NaN)).toBeFalse();
+  });
+
+  it('returns false on non-number values', () => {
+    expect(isNumber('asdfasdf')).toBeFalse();
+    expect(isNumber({})).toBeFalse();
+  });
+
+  it('returns true for number values, including Infinity', () => {
+    expect(isNumber(12)).toBeTrue();
+    expect(isNumber(12.999)).toBeTrue();
+    expect(isNumber(1 / 3)).toBeTrue();
+    expect(isNumber(Infinity)).toBeTrue();
+    expect(isNumber(-Infinity)).toBeTrue();
+  });
+});
+
+describe('isObject', () => {
+  it('returns false for other known primitives', () => {
+    expect(isObject(123)).toBeFalse();
+    expect(isObject('string')).toBeFalse();
+    // type is symbol
+    expect(isObject(Symbol('s'))).toBeFalse();
+  });
+
+  it('returns true for objects', () => {
+    expect(isObject({})).toBeTrue();
+    expect(isObject(['an array', 'does not have its own primitive type'])).toBeTrue();
+    expect(isObject(new Date())).toBeTrue();
+  });
+});
+
 describe('isObjectLike', () => {
   const referenceObject = {
     age: 23,
@@ -54,7 +214,6 @@ describe('isObjectLike', () => {
 
   it('throws if referenceObject is not an object', () => {
     expect(() => isObjectLike({ tested: false }, 12)).toThrow();
-    expect(() => isObjectLike({ tested: false }, ['no Arrays please'])).toThrow();
     expect(() => isObjectLike({ tested: false }, 'no strings, either')).toThrow();
     expect(() => isObjectLike({ tested: false }, null)).toThrow();
   });
@@ -62,16 +221,18 @@ describe('isObjectLike', () => {
   it('returns false if the "object" is not an object', () => {
     expect(isObjectLike(12, referenceObject)).toBe(false);
     expect(isObjectLike(null, referenceObject)).toBe(false);
-    expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
   });
 
-  it('returns true if the props are there (with type checking on by default)', () => {
-    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(false);
+  it('returns true if the props are there (with type checking off by default)', () => {
+    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(true);
     expect(isObjectLike(makeTestObject(99, 'Xavier'), referenceObject)).toBe(true);
   });
 
   it('returns false if the props are not there', () => {
     expect(isObjectLike({ age: 12, name: 'speak is missing' }, referenceObject)).toBe(false);
+    expect(isObjectLike(['this is', 'a totally different object'], referenceObject)).toBe(false);
+    expect(isObjectLike(['this is', 'a totally different object'], referenceObject, { checkType: false }))
+      .toBe(false);
   });
 
   it('returns false if there are more props in the testObject than are in the referenceObject', () => {
@@ -128,10 +289,17 @@ describe('isObjectWithExpectedProps', () => {
   });
 });
 
+describe('isPopulatedArray', () => {
+  it('tests for array and length', () => {
+    expect(isPopulatedArray(12)).toBeFalse();
+    expect(isPopulatedArray([])).toBeFalse();
+    expect(isPopulatedArray(['finally'])).toBeTrue();
+  });
+});
+
 describe('isPopulatedObject', () => {
   it('returns false for non-object (non {}) input', () => {
     expect(isPopulatedObject(12)).toBe(false);
-    expect(isPopulatedObject(['a', 'b'])).toBe(false);
     expect(isPopulatedObject(null)).toBe(false);
   });
 
@@ -162,43 +330,25 @@ describe('isPopulatedObject', () => {
   });
 });
 
-describe('isDate', () => {
-  it('tests for Dates', () => {
-    expect(isDate(1)).toBe(false);
-    expect(isDate(new Date())).toBe(true);
+describe('isPopulatedString', () => {
+  it('tests for string and length', () => {
+    expect(isPopulatedString(12)).toBeFalse();
+    expect(isPopulatedString('')).toBeFalse();
+    expect(isPopulatedString('yes!')).toBeTrue();
   });
 });
 
-describe('isDateGreaterThan', () => {
-  it('tests for Dates after another date', () => {
-    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
-    const marchFifteenth2020 = new Date(2020, 2, 15);
+describe('isZeroLength', () => {
+  it('tests for a length property equal to zero', () => {
+    // no length property
+    expect(isZeroLength(12)).toBeFalse();
+    expect(isZeroLength({})).toBeFalse();
+    expect(isZeroLength({ hasOtherPropeties: true })).toBeFalse();
 
-    expect(isDateGreaterThan('not a date', marchFifteenth2020)).toBe(false);
-    expect(isDateGreaterThan(marchFirst2020, marchFifteenth2020)).toBe(false);
-    expect(isDateGreaterThan(marchFifteenth2020, marchFirst2020)).toBe(true);
-    // equal
-    expect(isDateGreaterThan(marchFirst2020, marchFirst2020)).toBe(false);
-  });
+    expect(isZeroLength('a string!')).toBeFalse();
+    expect(isZeroLength(['an array'])).toBeFalse();
 
-  it('has an alias', () => {
-    expect(isDateAfter).toEqual(isDateGreaterThan);
-  });
-});
-
-describe('isDateLessThan', () => {
-  it('tests for Dates after another date', () => {
-    const marchFirst2020 = new Date(2020, 2, 1, 0, 0, 0, 0);
-    const marchFifteenth2020 = new Date(2020, 2, 15);
-
-    expect(isDateLessThan('not a date', marchFifteenth2020)).toBe(false);
-    expect(isDateLessThan(marchFirst2020, marchFifteenth2020)).toBe(true);
-    expect(isDateLessThan(marchFifteenth2020, marchFirst2020)).toBe(false);
-    // equal
-    expect(isDateLessThan(marchFirst2020, marchFirst2020)).toBe(false);
-  });
-
-  it('has an alias', () => {
-    expect(isDateBefore).toEqual(isDateLessThan);
+    expect(isZeroLength('')).toBeTrue();
+    expect(isZeroLength([])).toBeTrue();
   });
 });
