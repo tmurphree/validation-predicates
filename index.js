@@ -29,17 +29,24 @@ const isNull = function isNull(x) {
   return x === null;
 };
 
+/**
+ * @description Checks for a number.  Returns false for NaN.
+ * @param {number} x The number to check.
+ */
 const isNumber = function isNumber(x) {
-  return checkType(x, 'number');
+  return checkType(x, 'number') &&
+    !(Number.isNaN(x));
 };
 
 /**
- * @description Checks for an object (e.g. { message: 'hi' }).  Returns false for null and arrays.
+ * @description Checks for an object (e.g. { message: 'hi' }).  This is a basic check
+ *    that relies on typeof, so perhaps a better name for it is 'is not some other primitive'.
  * @param {object} x The object to test.
  * @returns {boolean} boolean
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
  */
 const isObject = function isObject(x) {
-  return checkType(x, 'object') && !(isNull(x)) && !(isArray(x));
+  return checkType(x, 'object') && !(isNull(x));
 };
 
 const isString = function isString(x) {
@@ -101,7 +108,7 @@ const isDateLessThan = function isDateLessThan(x, someDate) {
 };
 
 /**
- * @description Checks for a floating point number (a number with a decimal).
+ * @description Checks for a floating point number (a number with a nonzero decimal).
  * @param {number} x The number to test.
  * @returns {boolean} boolean
 */
@@ -110,14 +117,36 @@ const isFloat = function isFloat(x) {
 };
 
 /**
- * @description Checks for an integer.
+ * @description Checks for an integer.  Allows zero-value decimals e.g. 5.0.
  * @param {number} x The number to test.
  * @returns {boolean} boolean
 */
 const isInteger = function isInteger(x) {
-  return isNumber(x) && (x === Math.floor(x));
+  return isNumber(x) && Number.isInteger(x);
 };
 
+/**
+ * @description Checks for an ISO 8601-compliant date string.  Only checks these formats:
+ *    // with or without milliseconds, with the +/- hh:mm at the end
+ *    2020-01-11T15:03:11-10:00 || 2020-01-11T15:03:11.999-10:00
+ *    // with or without milliseconds, with the Z at the end
+ *    2020-01-11T15:03:11Z || 2020-01-11T15:03:11.999Z
+ * @param {string} x The string to test.
+ * @returns {boolean} boolean
+*/
+const isIsoDateString = function isIsoDateString(x) {
+  const hhmmNoMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d[+-][0-2]\d:[0-5]\d$/;
+  const hhmmWithMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d{1,}[+-][0-2]\d:[0-5]\d$/;
+  const zNoMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ$/;
+  const zWithMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d{1,}Z$/;
+
+  return isString(x) && (
+    zWithMilliseconds.test(x) ||
+    zNoMilliseconds.test(x) ||
+    hhmmWithMilliseconds.test(x) ||
+    hhmmNoMilliseconds.test(x)
+  );
+};
 
 /**
  * @description Checks for a number greater than someNumber.
@@ -246,6 +275,7 @@ module.exports = {
   isFunction,
   isFloat,
   isInteger,
+  isIsoDateString,
   isNull,
   isNotNullOrUndefined,
   isNotZeroLength,

@@ -7,7 +7,9 @@ const {
   isDateGreaterThan,
   isDateLessThan,
   isInteger,
+  isIsoDateString,
   isFloat,
+  isNumber,
   isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedObject,
@@ -87,6 +89,7 @@ describe('isFloat', () => {
   it('tests for floats', () => {
     expect(isFloat('asdf')).toBeFalse();
     expect(isFloat(12)).toBeFalse();
+    expect(isFloat(5.0)).toBeFalse();
     expect(isFloat(12.32)).toBeTrue();
   });
 });
@@ -96,6 +99,85 @@ describe('isInteger', () => {
     expect(isInteger('asdf')).toBeFalse();
     expect(isInteger(12.32)).toBeFalse();
     expect(isInteger(12)).toBeTrue();
+    expect(isInteger(5.0)).toBeTrue();
+  });
+});
+
+describe('isIsoDateString', () => {
+  it('tests for strings', () => {
+    expect(isIsoDateString(12)).toBeFalse();
+    expect(isIsoDateString(new Date())).toBeFalse();
+  });
+
+  it('tests for the +/- hh:mm format', () => {
+    // error path
+    const monthTensMoreThan1 = '2000-31-01T01:01:01-10:00';
+    const dayTensMoreThan3 = '2000-01-41T01:01:01-10:00';
+    const hourTensMoreThan2 = '2000-01-01T31:01:01-10:00';
+    const minuteTensMoreThan5 = '2000-01-01T01:71:01-10:00';
+    const secondTensMoreThan5 = '2000-01-01T01:01:61-10:00';
+    const hourOffsetTensMoreThan2 = '2000-01-01T01:01:01-30:00';
+    const minuteOffsetTensMoreThan5 = '2000-01-01T01:01:01-10:90';
+
+    // happy path
+    const noMilliseconds = '2000-01-01T01:01:01-10:00';
+    const withMilliseconds = '2000-01-01T01:01:01.234-10:00';
+    const usesAplusSign = '2000-01-01T01:01:01+09:00';
+
+    expect(isIsoDateString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateString(hourOffsetTensMoreThan2)).toBeFalse();
+    expect(isIsoDateString(minuteOffsetTensMoreThan5)).toBeFalse();
+
+    expect(isIsoDateString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateString(withMilliseconds)).toBeTrue();
+    expect(isIsoDateString(usesAplusSign)).toBeTrue();
+  });
+
+  it('tests for the Z format', () => {
+    // error path
+    const monthTensMoreThan1 = '2000-31-01T01:01:01Z';
+    const dayTensMoreThan3 = '2000-01-41T01:01:01Z';
+    const hourTensMoreThan2 = '2000-01-01T31:01:01Z';
+    const minuteTensMoreThan5 = '2000-01-01T01:71:01Z';
+    const secondTensMoreThan5 = '2000-01-01T01:01:61Z';
+    const lowerCaseZ = '2000-01-01T01:01:01z';
+
+    // happy path
+    const noMilliseconds = '2000-01-01T01:01:01Z';
+    const withMilliseconds = '2000-01-01T01:01:01.234Z';
+
+    expect(isIsoDateString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateString(lowerCaseZ)).toBeFalse();
+
+    expect(isIsoDateString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateString(withMilliseconds)).toBeTrue();
+  });
+});
+
+describe('isNumber', () => {
+  it('returns false for NaN', () => {
+    expect(isNumber(NaN)).toBeFalse();
+  });
+
+  it('returns false on non-number values', () => {
+    expect(isNumber('asdfasdf')).toBeFalse();
+    expect(isNumber({})).toBeFalse();
+  });
+
+  it('returns true for number values, including Infinity', () => {
+    expect(isNumber(12)).toBeTrue();
+    expect(isNumber(12.999)).toBeTrue();
+    expect(isNumber(1 / 3)).toBeTrue();
+    expect(isNumber(Infinity)).toBeTrue();
+    expect(isNumber(-Infinity)).toBeTrue();
   });
 });
 
