@@ -101,6 +101,25 @@ const isDateLessThan = function isDateLessThan(x, someDate) {
 };
 
 /**
+ * @description Checks for a floating point number (a number with a decimal).
+ * @param {number} x The number to test.
+ * @returns {boolean} boolean
+*/
+const isFloat = function isFloat(x) {
+  return isNumber(x) && (x !== Math.floor(x));
+};
+
+/**
+ * @description Checks for an integer.
+ * @param {number} x The number to test.
+ * @returns {boolean} boolean
+*/
+const isInteger = function isInteger(x) {
+  return isNumber(x) && (x === Math.floor(x));
+};
+
+
+/**
  * @description Checks for a number greater than someNumber.
  * @param {number} x The number to test.
  * @param {number} someNumber The number to compare to.
@@ -225,6 +244,8 @@ module.exports = {
   isDateGreaterThan,
   isDateLessThan,
   isFunction,
+  isFloat,
+  isInteger,
   isNull,
   isNotNullOrUndefined,
   isNotZeroLength,
