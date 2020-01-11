@@ -64,20 +64,6 @@ const main = function main(args = { strict: false }) {
 
   // #endregion simple "is" functions
 
-  // #region "is not" functions
-
-
-  const isNotNullOrUndefined = function isNotNullOrUndefined(x) {
-    return !(isNull(x)) && !(isUndefined(x));
-  };
-
-
-  const isNotZeroLength = function isNotZeroLength(x) {
-    return x.length !== 0;
-  };
-
-  // #endregion "is not" functions
-
   // #region more-complex functions
 
   /**
@@ -151,6 +137,10 @@ const main = function main(args = { strict: false }) {
     );
   };
 
+  const isNullOrUndefined = function isNullOrUndefined(x) {
+    return isNull(x) || isUndefined(x);
+  };
+
   /**
    * @description Checks for a number greater than someNumber.
    * @param {number} x The number to test.
@@ -185,11 +175,11 @@ const main = function main(args = { strict: false }) {
   };
 
   const isPopulatedArray = function isPopulatedArray(x) {
-    return isArray(x) && isNotZeroLength(x);
+    return isArray(x) && x.length > 0;
   };
 
   const isPopulatedString = function isPopulatedString(x) {
-    return isString(x) && isNotZeroLength(x);
+    return isString(x) && x.length > 0;
   };
 
   /**
@@ -211,7 +201,7 @@ const main = function main(args = { strict: false }) {
 
   /**
    * @description Checks that an object has the same properties as a reference object.  Optionally
-   *   checks to make sure that the properties are of the same type.
+   *   checks to make sure that the properties are of the same type.  Does not check symbols.
    * @param {object} x The object to test.
    * @param {object} referenceObject The object you want x to look like.
    * @param {object} [options] Options.
@@ -264,6 +254,15 @@ const main = function main(args = { strict: false }) {
       typeCheckPasses;
   };
 
+  /**
+   * @description Tests for a length property of 0.  Returns false if the length property
+   *    doesn't exist.
+   * @param {array} somePropName illuminatingDescription.
+   * @returns {boolean} boolean
+  */
+  const isZeroLength = function isZeroLength(x) {
+    return !(isNullOrUndefined(x.length)) && x.length === 0;
+  };
   // #endregion more-complex functions
 
   return {
@@ -280,8 +279,7 @@ const main = function main(args = { strict: false }) {
     isInteger,
     isIsoDateTimeString,
     isNull,
-    isNotNullOrUndefined,
-    isNotZeroLength,
+    isNullOrUndefined,
     isNumber,
     isNumberGreaterThan,
     isNumberLessThan,
@@ -294,6 +292,7 @@ const main = function main(args = { strict: false }) {
     isString,
     isSymbol,
     isUndefined,
+    isZeroLength,
   };
 };
 

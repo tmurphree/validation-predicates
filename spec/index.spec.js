@@ -13,7 +13,10 @@ const {
   isObject,
   isObjectLike,
   isObjectWithExpectedProps,
+  isPopulatedArray,
   isPopulatedObject,
+  isPopulatedString,
+  isZeroLength,
 } = require('../index');
 
 // #region jasmine setup
@@ -286,6 +289,14 @@ describe('isObjectWithExpectedProps', () => {
   });
 });
 
+describe('isPopulatedArray', () => {
+  it('tests for array and length', () => {
+    expect(isPopulatedArray(12)).toBeFalse();
+    expect(isPopulatedArray([])).toBeFalse();
+    expect(isPopulatedArray(['finally'])).toBeTrue();
+  });
+});
+
 describe('isPopulatedObject', () => {
   it('returns false for non-object (non {}) input', () => {
     expect(isPopulatedObject(12)).toBe(false);
@@ -316,5 +327,28 @@ describe('isPopulatedObject', () => {
     x[testSymbol] = 'hi';
 
     expect(isPopulatedObject(x)).toBe(true);
+  });
+});
+
+describe('isPopulatedString', () => {
+  it('tests for string and length', () => {
+    expect(isPopulatedString(12)).toBeFalse();
+    expect(isPopulatedString('')).toBeFalse();
+    expect(isPopulatedString('yes!')).toBeTrue();
+  });
+});
+
+describe('isZeroLength', () => {
+  it('tests for a length property equal to zero', () => {
+    // no length property
+    expect(isZeroLength(12)).toBeFalse();
+    expect(isZeroLength({})).toBeFalse();
+    expect(isZeroLength({ hasOtherPropeties: true })).toBeFalse();
+
+    expect(isZeroLength('a string!')).toBeFalse();
+    expect(isZeroLength(['an array'])).toBeFalse();
+
+    expect(isZeroLength('')).toBeTrue();
+    expect(isZeroLength([])).toBeTrue();
   });
 });

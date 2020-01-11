@@ -9,6 +9,9 @@ There are other great libraries out there that do similar things:
  
 Please use them if you're looking for a different take on the same subject.  
 
+# Change log  
+[Link to changes](https://github.com/tmurphree/validation-predicates/blob/master/CHANGELOG.md)  
+
 # Installation
 
 npm install --save @tmurphree/validation-predicates  
@@ -106,18 +109,18 @@ const { isDate, isObjectLike } = require('@tmurphree/validation-predicates').str
 |isFunction(x)|x is a function|  
 |isInteger(x)|x is a number (see isNumber) and has a zero-value decimal. e.g. 5 and 5.0 are both integers, but 5.01 is NOT.|  
 |isIsoDateTimeString(x)|x is a string and matches a subset of the ISO 8601 date time string format.<br><br>Checks for these patterns (note that the plus can be plus or minus and that 'milliseconds' is 'one or more digits'):<br>* YYYY-MM-DDThh:mm:ssZ<br>* YYYY-MM-DDThh:mm:ss.millisecondsZ<br>* YYYY-MM-DDThh:mm:ss+hh:mm<br>* YYYY-MM-DDThh:mm:ss.milliseconds+hh:mm|    
-|isNotNullOrUndefined(x)|x is not null and not undefined|  
-|isNotZeroLength(x)|length of x is > 0|  
 |isNull(x)|x is null|  
+|isNullOrUndefined(x)|x is null or undefined|  
 |isNumber(x)|x is a number and is not NaN|  
 |isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
 |isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
 |isObject(x)|x is an object per the definition in 'typeof' EXCEPT that it returns false for null.  Basically, this means it isn't another known type of primitive and is not null.  See [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof).|  
-|isObjectLike(x, referenceObject, [options={ checkType: false, debug: false }])|x is an object and has the same properties as referenceObject.  Does not check symbols.<br><br>**Strict mode changes the default to { checkType: true, debug: false }.**<br><br>Options: <br> * `checkType`  If true, checks that the properties are the same type **BUT** this is rudimentary checking (with typeof).<br> * `debug` If true, prints debug information to the console.|  
-|isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
+|isObjectLike(x, referenceObject, [options={ checkType: false, debug: false }])|x is an object and has exactly the same properties as referenceObject.  x does not have properties not in referenceObject.  Does not check symbols.<br><br>**Strict mode changes the default to { checkType: true, debug: false }.**<br><br>Options: <br> * `checkType`  If true, checks that the properties are the same type **BUT** this is rudimentary checking (with typeof).<br> * `debug` If true, prints debug information to the console.|  
+|isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x.  x may have properties not in arrayOfStrings.|  
 |isPopulatedArray(x)|x is an array with at least one element|  
 |isPopulatedObject(x)|x is an object with at least one property or Symbol|
 |isPopulatedString(x)|x is a string with at least one character|  
 |isString(x)|x is a string|  
 |isSymbol(x)|x is a [symbol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol)|  
 |isUndefined(x)|x is undefined|  
+|isZeroLength(x)|x has a length property that === 0|  
