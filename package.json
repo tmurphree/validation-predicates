@@ -7,8 +7,8 @@
     "lint": "eslint --ignore-path .gitignore .",
     "lint:fix": "eslint --ignore-path .gitignore --fix .",
     "pretest": "eslint --ignore-path .gitignore .",
-    "test": "jasmine spec/index.spec.js",
-    "test:all": "jasmine"
+    "test": "jasmine",
+    "preversion": "npm run test"
   },
   "keywords": [],
   "author": "Tom Murphree <tmurph1810@gmail.com>",

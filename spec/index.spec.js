@@ -220,8 +220,8 @@ describe('isObjectLike', () => {
     expect(isObjectLike(null, referenceObject)).toBe(false);
   });
 
-  it('returns true if the props are there (with type checking on by default)', () => {
-    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(false);
+  it('returns true if the props are there (with type checking off by default)', () => {
+    expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBe(true);
     expect(isObjectLike(makeTestObject(99, 'Xavier'), referenceObject)).toBe(true);
   });
 

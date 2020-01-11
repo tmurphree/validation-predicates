@@ -62,6 +62,30 @@ const someFunction = function someFunction(first, second) {
 someFunction(42, ['some','array']);
 ```
 
+## Strict mode  
+Some functions have options.  Strict mode is a convenient way to set some of the options.  **You can always, in both modes, set the options manually.**
+
+Without strict mode:  
+``` js
+const { isDate, isObjectLike } = require('@tmurphree/validation-predicates');
+
+// isDate, which has no options, is not changed
+
+// isObjectLike(a, b) is called with { checkType: false } by default
+// but you can still call isObjectLike(a, b, { checkType: true })
+```
+
+With strict mode:  
+``` js
+const { isDate, isObjectLike } = require('@tmurphree/validation-predicates').strict;
+
+// isDate, which has no options, is not changed
+
+// isObjectLike(a, b) is called with { checkType: true } by default
+// but you can still call isObjectLike(a, b, { checkType: false })
+```
+
+
 # Functions  
 * All functions return `boolean`.  
 * Parameters not in brackets are required.  
@@ -89,7 +113,7 @@ someFunction(42, ['some','array']);
 |isNumberGreaterThan(x, anotherNumber)|x is a number and is greater than anotherNumber|  
 |isNumberLessThan(x, anotherNumber)|x is a number and is less than anotherNumber|  
 |isObject(x)|x is an object per the definition in 'typeof' EXCEPT that it returns false for null.  Basically, this means it isn't another known type of primitive and is not null.  See [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof).|  
-|isObjectLike(x, referenceObject, [options={ checkType: true, debug: false }])|x is an object and has the same properties as referenceObject.  By default, also checks that all the properties are of the same type, **BUT** this is rudimentary checking (with typeof).  <br> Options: <br> * { checkType: true } checks that the properties are the same type <br> * { debug: true } prints debug information to the console.|  
+|isObjectLike(x, referenceObject, [options={ checkType: false, debug: false }])|x is an object and has the same properties as referenceObject.  Does not check symbols.<br><br>**Strict mode changes the default to { checkType: true, debug: false }.**<br><br>Options: <br> * `checkType`  If true, checks that the properties are the same type **BUT** this is rudimentary checking (with typeof).<br> * `debug` If true, prints debug information to the console.|  
 |isObjectWithExpectedProps(x, arrayOfStrings)|x is an object and every string in arrayOfStrings is a property of x|  
 |isPopulatedArray(x)|x is an array with at least one element|  
 |isPopulatedObject(x)|x is an object with at least one property or Symbol|
