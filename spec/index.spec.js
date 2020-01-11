@@ -7,9 +7,10 @@ const {
   isDateGreaterThan,
   isDateLessThan,
   isInteger,
-  isIsoDateString,
+  isIsoDateTimeString,
   isFloat,
   isNumber,
+  isObject,
   isObjectLike,
   isObjectWithExpectedProps,
   isPopulatedObject,
@@ -103,10 +104,10 @@ describe('isInteger', () => {
   });
 });
 
-describe('isIsoDateString', () => {
+describe('isIsoDateTimeString', () => {
   it('tests for strings', () => {
-    expect(isIsoDateString(12)).toBeFalse();
-    expect(isIsoDateString(new Date())).toBeFalse();
+    expect(isIsoDateTimeString(12)).toBeFalse();
+    expect(isIsoDateTimeString(new Date())).toBeFalse();
   });
 
   it('tests for the +/- hh:mm format', () => {
@@ -124,17 +125,17 @@ describe('isIsoDateString', () => {
     const withMilliseconds = '2000-01-01T01:01:01.234-10:00';
     const usesAplusSign = '2000-01-01T01:01:01+09:00';
 
-    expect(isIsoDateString(monthTensMoreThan1)).toBeFalse();
-    expect(isIsoDateString(dayTensMoreThan3)).toBeFalse();
-    expect(isIsoDateString(hourTensMoreThan2)).toBeFalse();
-    expect(isIsoDateString(minuteTensMoreThan5)).toBeFalse();
-    expect(isIsoDateString(secondTensMoreThan5)).toBeFalse();
-    expect(isIsoDateString(hourOffsetTensMoreThan2)).toBeFalse();
-    expect(isIsoDateString(minuteOffsetTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateTimeString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateTimeString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(hourOffsetTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteOffsetTensMoreThan5)).toBeFalse();
 
-    expect(isIsoDateString(noMilliseconds)).toBeTrue();
-    expect(isIsoDateString(withMilliseconds)).toBeTrue();
-    expect(isIsoDateString(usesAplusSign)).toBeTrue();
+    expect(isIsoDateTimeString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(withMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(usesAplusSign)).toBeTrue();
   });
 
   it('tests for the Z format', () => {
@@ -150,15 +151,15 @@ describe('isIsoDateString', () => {
     const noMilliseconds = '2000-01-01T01:01:01Z';
     const withMilliseconds = '2000-01-01T01:01:01.234Z';
 
-    expect(isIsoDateString(monthTensMoreThan1)).toBeFalse();
-    expect(isIsoDateString(dayTensMoreThan3)).toBeFalse();
-    expect(isIsoDateString(hourTensMoreThan2)).toBeFalse();
-    expect(isIsoDateString(minuteTensMoreThan5)).toBeFalse();
-    expect(isIsoDateString(secondTensMoreThan5)).toBeFalse();
-    expect(isIsoDateString(lowerCaseZ)).toBeFalse();
+    expect(isIsoDateTimeString(monthTensMoreThan1)).toBeFalse();
+    expect(isIsoDateTimeString(dayTensMoreThan3)).toBeFalse();
+    expect(isIsoDateTimeString(hourTensMoreThan2)).toBeFalse();
+    expect(isIsoDateTimeString(minuteTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(secondTensMoreThan5)).toBeFalse();
+    expect(isIsoDateTimeString(lowerCaseZ)).toBeFalse();
 
-    expect(isIsoDateString(noMilliseconds)).toBeTrue();
-    expect(isIsoDateString(withMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(noMilliseconds)).toBeTrue();
+    expect(isIsoDateTimeString(withMilliseconds)).toBeTrue();
   });
 });
 
@@ -181,6 +182,21 @@ describe('isNumber', () => {
   });
 });
 
+describe('isObject', () => {
+  it('returns false for other known primitives', () => {
+    expect(isObject(123)).toBeFalse();
+    expect(isObject('string')).toBeFalse();
+    // type is symbol
+    expect(isObject(Symbol('s'))).toBeFalse();
+  });
+
+  it('returns true for objects', () => {
+    expect(isObject({})).toBeTrue();
+    expect(isObject(['an array', 'does not have its own primitive type'])).toBeTrue();
+    expect(isObject(new Date())).toBeTrue();
+  });
+});
+
 describe('isObjectLike', () => {
   const referenceObject = {
     age: 23,
@@ -195,7 +211,6 @@ describe('isObjectLike', () => {
 
   it('throws if referenceObject is not an object', () => {
     expect(() => isObjectLike({ tested: false }, 12)).toThrow();
-    expect(() => isObjectLike({ tested: false }, ['no Arrays please'])).toThrow();
     expect(() => isObjectLike({ tested: false }, 'no strings, either')).toThrow();
     expect(() => isObjectLike({ tested: false }, null)).toThrow();
   });
@@ -203,7 +218,6 @@ describe('isObjectLike', () => {
   it('returns false if the "object" is not an object', () => {
     expect(isObjectLike(12, referenceObject)).toBe(false);
     expect(isObjectLike(null, referenceObject)).toBe(false);
-    expect(isObjectLike(['no Arrays please'], referenceObject)).toBe(false);
   });
 
   it('returns true if the props are there (with type checking on by default)', () => {
@@ -213,6 +227,9 @@ describe('isObjectLike', () => {
 
   it('returns false if the props are not there', () => {
     expect(isObjectLike({ age: 12, name: 'speak is missing' }, referenceObject)).toBe(false);
+    expect(isObjectLike(['this is', 'a totally different object'], referenceObject)).toBe(false);
+    expect(isObjectLike(['this is', 'a totally different object'], referenceObject, { checkType: false }))
+      .toBe(false);
   });
 
   it('returns false if there are more props in the testObject than are in the referenceObject', () => {
@@ -272,7 +289,6 @@ describe('isObjectWithExpectedProps', () => {
 describe('isPopulatedObject', () => {
   it('returns false for non-object (non {}) input', () => {
     expect(isPopulatedObject(12)).toBe(false);
-    expect(isPopulatedObject(['a', 'b'])).toBe(false);
     expect(isPopulatedObject(null)).toBe(false);
   });
 

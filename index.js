@@ -134,7 +134,7 @@ const isInteger = function isInteger(x) {
  * @param {string} x The string to test.
  * @returns {boolean} boolean
 */
-const isIsoDateString = function isIsoDateString(x) {
+const isIsoDateTimeString = function isIsoDateTimeString(x) {
   const hhmmNoMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d[+-][0-2]\d:[0-5]\d$/;
   const hhmmWithMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d{1,}[+-][0-2]\d:[0-5]\d$/;
   const zNoMilliseconds = /^\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\dZ$/;
@@ -275,7 +275,7 @@ module.exports = {
   isFunction,
   isFloat,
   isInteger,
-  isIsoDateString,
+  isIsoDateTimeString,
   isNull,
   isNotNullOrUndefined,
   isNotZeroLength,
