@@ -6,7 +6,7 @@
 
 ## Other changes  
 * Add strict mode  
-* Add isFloat, isInteger, and isIsoDateString
+* Add isFloat, isInteger, and isIsoDateTimeString
 
 
 # 1.2.0  
