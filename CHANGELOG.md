@@ -1,3 +1,6 @@
+# 2.0.1  
+Streamline package  
+
 # 2.0.0  
 ## Breaking changes   
 * Change the default behavior of isObjectLike to use { checkType: false }  

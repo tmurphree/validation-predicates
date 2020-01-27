@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/tmurphree/validation-predicates/issues"
   },
-  "homepage": "https://github.com/tmurphree/validation-predicates"
+  "homepage": "https://github.com/tmurphree/validation-predicates",
+  "files": [
+    "index.js"
+  ]
 }
