@@ -57,9 +57,15 @@ describe('isObjectLike', () => {
     return { age, name, speak };
   };
 
-  it('returns true if the props are there (with type checking on by default)', () => {
+  it('sets checkType to true by default', () => {
     expect(isObjectLike(makeTestObject('no type checking', 'Alice'), referenceObject)).toBeFalse();
     expect(isObjectLike(makeTestObject(99, 'Xavier'), referenceObject)).toBeTrue();
+  });
+
+  it('returns false if there are more props in the testObject than are in the referenceObject', () => {
+    const itHasMoreProps = makeTestObject(72, 'Jans');
+    itHasMoreProps.someAdditionalProp = true;
+    expect(isObjectLike(itHasMoreProps, referenceObject)).toBe(false);
   });
 
   it('optionally checks types', () => {
@@ -85,11 +91,11 @@ describe('isObjectLike', () => {
     )).toBe(true);
   });
 
-  it('optionally allows extras', () => {
+  it('optionally allows extra properties', () => {
     const hasExtraPropD = { a: 'string', b: true, c: 12, d: 'something' };
     const template = { a: 'string', b: true, c: 12 };
 
-    expect(isObjectLike(hasExtraPropD, template, { allowExtraProps: true }))
+    expect(isObjectLike(hasExtraPropD, template, { allowExtraProps: true, debug: true }))
       .toBeTrue();
   });
 });

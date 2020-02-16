@@ -1,3 +1,6 @@
+# 2.0.3  
+Set isObjectLike options without clobbering defaults  
+
 # 2.0.2  
 Add allowExtraProps option to isObjectLike  
 

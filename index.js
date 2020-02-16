@@ -215,7 +215,7 @@ const main = function main(args = { strict: false }) {
   const isObjectLike = function isObjectLike(
     x,
     template,
-    options = { allowExtraProps: false, checkType: args.strict, debug: false },
+    options = {},
   ) {
     if (!(isObject(template))) {
       throw new Error('Expected template to be an object.');
@@ -230,10 +230,32 @@ const main = function main(args = { strict: false }) {
       return false;
     }
 
+    // #region set options
+    const copyOfOptions = { ...options };
+    const defaults = {
+      allowExtraProps: false,
+      checkType: args.strict,
+      debug: false,
+    };
+
+    for (let index = 0; index < Object.keys(defaults).length; index++) {
+      const currentKey = Object.keys(defaults)[index];
+
+      if (copyOfOptions[currentKey] === undefined) {
+        copyOfOptions[currentKey] = defaults[currentKey];
+      }
+    }
+    // #endregion set options
+
+    if (copyOfOptions.debug) {
+      console.log('options is:');
+      console.log(copyOfOptions);
+    }
+
     const objectPropsAreSameType = function objectPropsAreSameType() {
-      return isObject(x) && Object.keys(x)
+      return Object.keys(template)
         .every((el) => {
-          if (options.debug && (typeof x[el] !== typeof template[el])) {
+          if (copyOfOptions.debug && (typeof x[el] !== typeof template[el])) {
             console.log(`Property type mismatch detected for property ${el}`);
             console.log(`Got ${typeof x[el]}, expected ${typeof template[el]}`);
           }
@@ -242,15 +264,15 @@ const main = function main(args = { strict: false }) {
         });
     };
 
-    const propertiesCheckPasses = options.allowExtraProps ?
+    const propertiesCheckPasses = copyOfOptions.allowExtraProps ?
       true :
       Object.keys(x).length === Object.keys(template).length;
 
-    const typeCheckPasses = options.checkType ?
+    const typeCheckPasses = copyOfOptions.checkType ?
       objectPropsAreSameType() :
       true;
 
-    if (options.debug) {
+    if (copyOfOptions.debug) {
       console.log(`x is ${JSON.stringify(x, null, 2)}`);
       console.log(`template is ${JSON.stringify(template, null, 2)}`);
       console.log(`isObjectWithExpectedProps? ${isObjectWithExpectedProps(x, Object.keys(template))}`);

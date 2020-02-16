@@ -263,7 +263,7 @@ describe('isObjectLike', () => {
     )).toBe(true);
   });
 
-  it('optionally allows extras', () => {
+  it('optionally allows extra properties', () => {
     const hasExtraPropD = { a: 'string', b: true, c: 12, d: 'something' };
     const template = { a: 'string', b: true, c: 12 };
 
