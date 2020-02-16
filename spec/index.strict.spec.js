@@ -84,4 +84,12 @@ describe('isObjectLike', () => {
       { checkType: true },
     )).toBe(true);
   });
+
+  it('optionally allows extras', () => {
+    const hasExtraPropD = { a: 'string', b: true, c: 12, d: 'something' };
+    const template = { a: 'string', b: true, c: 12 };
+
+    expect(isObjectLike(hasExtraPropD, template, { allowExtraProps: true }))
+      .toBeTrue();
+  });
 });

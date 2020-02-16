@@ -203,8 +203,10 @@ const main = function main(args = { strict: false }) {
    * @description Checks that an object has the same properties as a reference object.  Optionally
    *   checks to make sure that the properties are of the same type.  Does not check symbols.
    * @param {object} x The object to test.
-   * @param {object} referenceObject The object you want x to look like.
+   * @param {object} template The object you want x to look like.
    * @param {object} [options] Options.
+   * @param {boolean} [options.allowExtraProps=false] Return true if the object to test has
+   *   properties not in template and other tests pass.
    * @param {boolean} [options.checkType=false] Strict mode changes the default to true.  Return
    *   false if the properties are there but are of different types.
    * @param {boolean} [options.debug=false] Print troubleshooting info to console.
@@ -212,28 +214,37 @@ const main = function main(args = { strict: false }) {
   */
   const isObjectLike = function isObjectLike(
     x,
-    referenceObject,
-    options = { checkType: args.strict, debug: false },
+    template,
+    options = { allowExtraProps: false, checkType: args.strict, debug: false },
   ) {
-    if (!(isObject(referenceObject))) {
-      throw new Error('Expected referenceObject to be an object.');
+    if (!(isObject(template))) {
+      throw new Error('Expected template to be an object.');
     }
 
     if (!(isObject(options))) {
       throw new Error('Expected options to be an object.');
     }
 
+    // avoid errors in calculating propertiesCheckPasses
+    if (!(isObject(x))) {
+      return false;
+    }
+
     const objectPropsAreSameType = function objectPropsAreSameType() {
       return isObject(x) && Object.keys(x)
         .every((el) => {
-          if (options.debug && (typeof x[el] !== typeof referenceObject[el])) {
+          if (options.debug && (typeof x[el] !== typeof template[el])) {
             console.log(`Property type mismatch detected for property ${el}`);
-            console.log(`Got ${typeof x[el]}, expected ${typeof referenceObject[el]}`);
+            console.log(`Got ${typeof x[el]}, expected ${typeof template[el]}`);
           }
 
-          return typeof x[el] === typeof referenceObject[el];
+          return typeof x[el] === typeof template[el];
         });
     };
+
+    const propertiesCheckPasses = options.allowExtraProps ?
+      true :
+      Object.keys(x).length === Object.keys(template).length;
 
     const typeCheckPasses = options.checkType ?
       objectPropsAreSameType() :
@@ -241,16 +252,16 @@ const main = function main(args = { strict: false }) {
 
     if (options.debug) {
       console.log(`x is ${JSON.stringify(x, null, 2)}`);
-      console.log(`referenceObject is ${JSON.stringify(referenceObject, null, 2)}`);
-      console.log(`isObjectWithExpectedProps? ${isObjectWithExpectedProps(x, Object.keys(referenceObject))}`);
+      console.log(`template is ${JSON.stringify(template, null, 2)}`);
+      console.log(`isObjectWithExpectedProps? ${isObjectWithExpectedProps(x, Object.keys(template))}`);
       if (isObject(x)) {
-        console.log(`key length the same? ${Object.keys(x).length === Object.keys(referenceObject).length}`);
+        console.log(`key length the same? ${Object.keys(x).length === Object.keys(template).length}`);
       }
       console.log(`objectPropsAreSameType? ${objectPropsAreSameType()}`);
     }
 
-    return isObjectWithExpectedProps(x, Object.keys(referenceObject)) &&
-      Object.keys(x).length === Object.keys(referenceObject).length &&
+    return isObjectWithExpectedProps(x, Object.keys(template)) &&
+      propertiesCheckPasses &&
       typeCheckPasses;
   };
 

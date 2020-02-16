@@ -1,3 +1,6 @@
+# 2.0.2  
+Add allowExtraProps option to isObjectLike  
+
 # 2.0.1  
 Streamline package  
 
