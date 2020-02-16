@@ -4,9 +4,9 @@
   "description": "Functions that take some of the pain out of validating input",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint --ignore-path .gitignore .",
+    "lint": "eslint --ignore-path .gitignore --fix --fix-type layout .",
     "lint:fix": "eslint --ignore-path .gitignore --fix .",
-    "pretest": "eslint --ignore-path .gitignore .",
+    "pretest": "npm run lint",
     "test": "jasmine",
     "preversion": "npm run test"
   },
