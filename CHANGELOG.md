@@ -1,3 +1,6 @@
+# 2.0.4  
+Update dev dependencies to fix acorn vulnerability.  
+
 # 2.0.3  
 Set isObjectLike options without clobbering defaults  
 
