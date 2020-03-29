@@ -1,6 +1,6 @@
 {
   "name": "@tmurphree/validation-predicates",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Functions that take some of the pain out of validating input",
   "main": "index.js",
   "scripts": {
